@@ -1,7 +1,7 @@
 # Hangman in python
+from wordlist import words
 import random
 
-words = ("apple", "banana", "coconut", "pineapple")
 
 #dictionary of key
 hangman_art = {0: ("     ",
@@ -24,19 +24,58 @@ hangman_art = {0: ("     ",
                    " /   "),
                6: ("  o  ",
                    " /|\\ ",
-                   " /|\\ ")}
+                   " / \\ ")}
 
 def display_man(wrong_gueses):
-    pass
+    for line in hangman_art[wrong_gueses]:
+        print(line)
 
 def display_hint (hint):
-    pass
+    print(" ".join(hint))
 
 def display_answer (answer):
-    pass
+    print(" ".join(answer))
 
 def main():
-    pass
+    answer = random.choice(words)
+    hint = ["_"] * len(answer)
+    wrong_guesses = 0
+    gussed_letters = set()
+    is_running = True
+
+    while is_running:
+        display_man(wrong_guesses)
+        display_hint(hint)
+        guess = input("Guess a letter: ").lower()
+
+        if len(guess) != 1 or not guess.isalpha():
+            print("Invalid input.")
+            continue
+
+        if guess in gussed_letters:
+            print(f"{guess} is already guessed.")
+            continue
+
+        gussed_letters.add(guess)
+
+        if guess in answer:
+            for i in range(len(answer)):
+                if answer[i] == guess:
+                    hint[i] = guess
+        else:
+            wrong_guesses += 1
+
+        if "_" not in hint:
+            display_man(wrong_guesses)
+            display_answer(answer)
+            print("YOU WIN!")
+            is_running =  False
+        elif wrong_guesses >= len(hangman_art) - 1:
+            display_man(wrong_guesses)
+            display_answer(answer)
+            print("YOU LOSE!")
+            is_running = False
+
 
 if __name__ == '__main__':
     main()
